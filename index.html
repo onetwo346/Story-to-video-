@@ -3,116 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historical Story Generator</title>
+    <title>Story to Vid</title>
     <style>
-        body {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
         }
-        h1 {
-            color: #333;
+        body {
+            background: #0a0a0a;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
             text-align: center;
         }
-        .form-container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        h1 {
+            font-size: 2rem;
             margin-bottom: 20px;
+            background: linear-gradient(90deg, cyan, magenta);
+            -webkit-background-clip: text;
+            color: transparent;
         }
-        input[type="text"] {
-            width: 70%;
+        input {
+            width: 80%;
+            max-width: 400px;
             padding: 10px;
-            margin-right: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            font-size: 16px;
+            border: 2px solid cyan;
+            border-radius: 5px;
+            background: #222;
+            color: white;
+            text-align: center;
+            outline: none;
         }
         button {
+            margin-top: 15px;
             padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
+            font-size: 16px;
+            background: cyan;
+            color: black;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
+            transition: 0.3s;
         }
         button:hover {
-            background-color: #0056b3;
+            background: magenta;
         }
-        .result-container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            display: none; /* Hidden until content is generated */
+        .loading {
+            display: none;
+            margin-top: 20px;
+            font-size: 18px;
+            color: cyan;
         }
-        .result-container h2 {
-            color: #007BFF;
+        .video-container {
+            margin-top: 20px;
+            display: none;
         }
-        img, video {
-            max-width: 100%;
-            border-radius: 4px;
-            margin-top: 10px;
+        video {
+            width: 80%;
+            max-width: 600px;
+            border: 2px solid cyan;
+            border-radius: 10px;
         }
-        audio {
-            width: 100%;
-            margin-top: 10px;
+        .download-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background: green;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <h1>Historical Story Generator</h1>
-    
-    <!-- Form for user input -->
-    <div class="form-container">
-        <form id="historyForm">
-            <label for="historyRequest">What historical story would you like?</label><br>
-            <input type="text" id="historyRequest" name="historyRequest" placeholder="e.g., What were ancient people like?" required>
-            <button type="submit">Generate</button>
-        </form>
-    </div>
 
-    <!-- Results section -->
-    <div class="result-container" id="resultContainer">
-        <h2>Your Historical Story</h2>
-        <p><strong>Story:</strong> <span id="narrative"></span></p>
-        <p><strong>Visuals:</strong></p>
-        <img id="visuals" src="" alt="Generated historical image">
-        <p><strong>Audio:</strong></p>
-        <audio id="audio" controls src=""></audio>
-        <p><strong>Video:</strong></p>
-        <video id="video" controls src=""></video>
+    <h1>Story to Vid</h1>
+    <input type="text" id="storyInput" placeholder="Enter a historical topic...">
+    <button onclick="generateStory()">Generate Story</button>
+    
+    <div class="loading" id="loading">Generating story...</div>
+    
+    <div class="video-container" id="videoContainer">
+        <video controls id="generatedVideo">
+            <source src="sample-video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <button class="download-btn" id="downloadBtn" onclick="downloadVideo()">Download Video</button>
     </div>
 
     <script>
-        // Handle form submission
-        document.getElementById('historyForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent page reload
-            
-            const request = document.getElementById('historyRequest').value;
-            const resultContainer = document.getElementById('resultContainer');
-            
-            // Simulate AI response (in reality, this would fetch from a backend)
-            let narrative = "No story generated yet.";
-            if (request.toLowerCase().includes("ancient people")) {
-                narrative = `
-                    The sun hung low over Mesopotamia, circa 4000 BCE, casting golden light on a village of mudbrick huts. 
-                    A woman ground emmer wheat into flour, while a man sharpened a flint blade for the hunt. 
-                    Children laughed, goats bleated, and nights were filled with tales of sky gods.
-                `;
+        function generateStory() {
+            let input = document.getElementById("storyInput").value;
+            if (input.trim() === "") {
+                alert("Please enter a historical topic!");
+                return;
             }
 
-            // Update the page with simulated content
-            document.getElementById('narrative').textContent = narrative;
-            document.getElementById('visuals').src = "https://via.placeholder.com/600x400?text=Mesopotamian+Village"; // Placeholder image
-            document.getElementById('audio').src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"; // Placeholder audio
-            document.getElementById('video').src = "https://www.w3schools.com/html/mov_bbb.mp4"; // Placeholder video
-            
-            // Show the results
-            resultContainer.style.display = 'block';
-        });
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("videoContainer").style.display = "none";
+            document.getElementById("downloadBtn").style.display = "none";
+
+            // Simulate AI processing time
+            setTimeout(() => {
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("videoContainer").style.display = "block";
+
+                // Replace with actual video URL once generated
+                document.getElementById("generatedVideo").src = "generated-story-video.mp4";
+                document.getElementById("downloadBtn").style.display = "block";
+            }, 5000); // Simulating a 5-second delay for processing
+        }
+
+        function downloadVideo() {
+            const videoUrl = document.getElementById("generatedVideo").src;
+            const a = document.createElement('a');
+            a.href = videoUrl;
+            a.download = "historical-story-video.mp4";
+            a.click();
+        }
     </script>
+
 </body>
 </html>
